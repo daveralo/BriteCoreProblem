@@ -1,9 +1,15 @@
-from django.test import TestCase
+import json
+from django.test import RequestFactory, TestCase
 from .models import Risk
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
+from . import views
 
+
+def response_to_json(response):
+    str_content = response.content.decode("utf-8")
+    return json.loads(str_content)
 
 class ModelTestCase(TestCase):
     """This class defines the test suite for the risk model."""
@@ -22,16 +28,16 @@ class ModelTestCase(TestCase):
 
 class ViewTestCase(TestCase):
     """Test suite for the api views."""
-
     def setUp(self):
-        """Define the test client and other test variables."""
-        self.client = APIClient()
-        self.risk_data = {'name': 'test'}
-        self.response = self.client.post(
-            reverse('create'),
-            self.risk_data,
-            format="json")
+        self.factory = RequestFactory()    
 
-    def test_api_can_create_a_risk(self):
-        """Test the api has risk creation capability."""
-        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)        
+    def test_should_return_empty_array(self):
+        # when
+        request = self.factory.get('/risk/')
+        print(request)
+        response = views.risk_list(request)
+        print(response)
+        json_content = response_to_json(response)
+
+        # then
+        self.assertEqual(len(json_content), 0)    

@@ -4,13 +4,16 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from risk.models import Risk
 from risk.serializers import RiskSerializer
+#from django.template.loader import render_to_string
+#from rest_framework.renderers import TemplateHTMLRenderer
+from django.template import loader
 
 class JSONResponse(HttpResponse):
     """
     An HttpResponse that renders its content into JSON.
     """
     def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
+        content = JSONRenderer()
         kwargs['content_type'] = 'application/json'
         super(JSONResponse, self).__init__(content, **kwargs)
 
@@ -20,9 +23,15 @@ def risk_list(request):
     List all code risk, or create a new risk.
     """
     if request.method == 'GET':
-        risk = Risk.objects.all()
-        serializer = RiskSerializer(risk, many=True)
-        return JSONResponse(serializer.data)
+        risks = Risk.objects.all()
+        serializer = RiskSerializer(risks, many=True)
+        #context['serializer.data'] = render_to_string("risk/iandex.html")
+        #print("daniel")
+        #return HttpResponse(json.dumps(context), content_type="application/json")
+        #return JSONResponse(serializer.data)  #--ojo original
+        template = loader.get_template('index.html')
+        context = {'risks': risks,}
+        return HttpResponse(template.render(context, request))
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
