@@ -1,7 +1,30 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
 <h1>Risk List</h1>
 <ul>
     {% for risk in risks %}
-        <li>{{risk.id}} {{risk.name}} {{risk.data}}</li>
+        <li>Risk: {{risk.name}} 
+        <table style="width:50%">
+        <tr>
+          <th>Field</th>
+          <th>Type</th> 
+          <th>Label</th>
+        </tr>
+        {% for field in risk.data.fields %}
+          {% for detail in field.attrs %}
+            <tr>
+              <td>{{ field.name }}</td>
+              <td>{{ detail.type }}</td> 
+              <td>{{ detail.label }}</td>
+            </tr>
+          {% endfor %}  
+        {% endfor %}
+        </table>
+        </li>  
+        <p>   
     {% endfor %}
 </ul>
 
@@ -9,3 +32,50 @@
 <textarea rows="4" cols="50">
 At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
 </textarea>
+<div class='row text-center'>
+	<div class='col-sm-4 col-sm-offset-4'>
+		<h1>All Todos</h1>
+
+		<button ui-sref="add-todo" class='btn btn-primary btn-lg' style='margin-bottom:20px;'>Add Todo</button>
+
+		<ul class="list-group">
+			<li ng-repeat='todo in todos' ng-class="{completed: todo.is_completed}" class="list-group-item">
+				<input type="checkbox" ng-checked="todo.is_completed" ng-change="toggleCompleted(todo)" ng-model='todo.is_completed'>  {{todo.title}}
+
+				<span class='badge' ng-click="deleteTodo(todo.id)">X</span>
+			</li>
+		</ul>
+	</div>
+</div>
+script
+
+<script type='text/javascript'>
+var geodata = {{ risk|safe }};
+document.getElementById("demo").innerHTML = 'xxx';
+</script>
+despues
+
+    <div ng-controller="DemoCtrl">
+        <div class="data">
+            Click:
+        </div>
+        <button ng-click="save()">Get Time</button>
+        <hr />
+    </div>
+
+{{risks.data}}  
+
+<p>How to modify values in a JSON object using the bracket notation.</p>
+
+<p id="demo"></p>
+
+
+<script>
+  var myObj = JSON.parse('{{ risks }}');
+  document.getElementById("demo").innerHTML = 'xxx';
+</script>
+
+<script type="text/javascript" src="{% static "js/main.js" %}"></script>
+
+</body>
+</html>
