@@ -1,0 +1,135 @@
+ALTER ROLE bcuser SET client_encoding TO 'utf8';
+ALTER ROLE bcuser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE bcuser SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE britecore TO bcuser;
+
+
+
+
+from risk.models import Risk
+from risk.serializers import RiskSerializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+risk = Risk(name='asegurado')
+risk.save()
+
+serializer = RiskSerializer(risk)
+serializer.data
+
+content = JSONRenderer().render(serializer.data)
+content
+
+from django.utils.six import BytesIO
+stream = BytesIO(content)
+data = JSONParser().parse(stream)
+data
+
+serializer = RiskSerializer(data=data)
+serializer.is_valid()
+
+serializer.validated_data
+risk = serializer.save()
+risk
+
+
+ALTER ROLE bcuser CREATEDB;
+
+
+http http://127.0.0.1:8000/risk/
+http -j POST http://127.0.0.1:8000/risk/ name=automovil
+
+
+python3 manage.py shell
+from risk.models import Risk
+Risk.objects.create(name='automobile', data={'chassis': 'numeric', 'color': 'text', 'purchase_date': 'date'})
+
+Risk.objects.create(
+    name='automobile', 
+    data={
+        'name': 'chassis', 
+        'attrs': [
+            {
+            'type': 'text', 
+            'label': 'Chassis'
+            }
+           ] 
+         }
+)
+
+
+Risk.objects.create(
+    name='automobile', 
+    data=[{
+           'name': 'chassis', 
+           'attrs': [
+               {
+               'type': 'text', 
+               'label': 'Chassis'
+               }
+               ] 
+          },
+         {
+           'name': 'color', 
+           'attrs': [
+               {
+               'type': 'text', 
+               'label': 'Color'
+               }
+               ] 
+          } 
+         ]
+)
+
+
+Risk.objects.create(
+    name='automobile', 
+    data={'fields' : [{'name': 'chassis', 
+                       'attrs': [{'type': 'text', 
+                                 'label': 'Chassis'}] 
+                      },
+                      {'name': 'color', 
+                       'attrs': [{'type': 'text', 
+                                'label': 'Color'}] 
+                      },
+                      {'name': 'purchase_date', 
+                       'attrs': [{'type': 'date', 
+                                'label': 'Purchase date'}] 
+                      },
+                      {'name': 'commercial_value', 
+                       'attrs': [{'type': 'number', 
+                                'label': 'Commercial value'}] 
+                      }           
+                     ]           
+          } 
+)
+
+Risk.objects.create(
+    name='person', 
+    data={'fields' : [{'name': 'first_name', 
+                       'attrs': [{'type': 'text', 
+                                 'label': 'First name'}] 
+                      },
+                      {'name': 'last_name', 
+                       'attrs': [{'type': 'text', 
+                                'label': 'Last name'}] 
+                      },
+                      {'name': 'birth_date', 
+                       'attrs': [{'type': 'date', 
+                                'label': 'Birth date'}] 
+                      }         
+                     ]           
+          } 
+)
+
+
+Risk.objects.create(name='person', data={'first_name': 'text', 'last_name': 'text', 'birth_date': 'date'})
+
+---
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the risk index.")
