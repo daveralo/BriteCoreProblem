@@ -1,8 +1,17 @@
-{% load staticfiles %}
 <!DOCTYPE html>
-<html>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<html lang=”en”>
+ <head>
+ <meta charset=”utf-8">
+ <title>Vue-js | Django | Crud App</title>
+ <meta name=”viewport” content=”width=device-width, initial-scale=1.0">
+ <meta name=”description” content=”A simple crud app made with the vue js and django”>
+<meta name=”keywords” content=”vuejs, django, crudapp, restapi”>
+    <!-- bootstap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- boostrap css -->
+</head>
 <body>
+
 <h1>Risk List</h1>
 <ul>
     {% for risk in risks %}
@@ -28,54 +37,80 @@
     {% endfor %}
 </ul>
 
-{{ risks }}
-<textarea rows="4" cols="50">
-At w3schools.com you will learn how to make a website. We offer free tutorials in all web development technologies. 
-</textarea>
-<div class='row text-center'>
-	<div class='col-sm-4 col-sm-offset-4'>
-		<h1>All Todos</h1>
 
-		<button ui-sref="add-todo" class='btn btn-primary btn-lg' style='margin-bottom:20px;'>Add Todo</button>
 
-		<ul class="list-group">
-			<li ng-repeat='todo in todos' ng-class="{completed: todo.is_completed}" class="list-group-item">
-				<input type="checkbox" ng-checked="todo.is_completed" ng-change="toggleCompleted(todo)" ng-model='todo.is_completed'>  {{todo.title}}
-
-				<span class='badge' ng-click="deleteTodo(todo.id)">X</span>
-			</li>
-		</ul>
-	</div>
-</div>
-script
-
-<script type='text/javascript'>
-var geodata = {{ risk|safe }};
-document.getElementById("demo").innerHTML = 'xxx';
-</script>
-despues
-
-    <div ng-controller="DemoCtrl">
-        <div class="data">
-            Click:
+  <div id="starting">
+      <div class="container">
+        <div class="row">
+          <h1>List of Risks
+          <button class="btn btn-success">ADD RISK</button>
+          </h1>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="risk in risks">
+                <th scope="row">${risk.risk_id}</th>
+                <td>${risk.name}</td>
+                <td>${risk.data}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <button ng-click="save()">Get Time</button>
-        <hr />
-    </div>
-
-{{risks.data}}  
-
-<p>How to modify values in a JSON object using the bracket notation.</p>
-
-<p id="demo"></p>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+  </div>
 
 
-<script>
-  var myObj = JSON.parse('{{ risks }}');
-  document.getElementById("demo").innerHTML = 'xxx';
-</script>
+  <!-- bootrtap js files -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-<script type="text/javascript" src="{% static "js/main.js" %}"></script>
+  <!-- vue.js files -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
 
+  <script type="text/javascript">
+    Vue.http.headers.common['X-CSRFToken'] = "{{ csrf_token }}";
+    new Vue({
+      el: '#starting',
+      delimiters: ['${','}'],
+      data: {
+        risks: [],
+        loading: true,
+        currentRisk: {},
+        message: null,
+        newRisk: { 'article_heading': null, 'article_body': null },
+        search_term: '',
+      },
+      mounted: function() {
+        this.getRisks();
+      },
+      methods: {
+        getRisks: function() {
+          let api_url = '/api/risk/';
+          if(this.search_term!==''||this.search_term!==null) {
+            api_url = '/api/risk/?search=${this.search_term}'
+          }
+          this.loading = true;
+          this.$http.get(api_url)
+              .then((response) => {
+                this.risks = response.data;
+                this.loading = false;
+              })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        } 
+      }        	
+    });
+  </script>      	
 </body>
 </html>

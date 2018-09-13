@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from .models import Risk
 
-
-class RiskSerializer(serializers.HyperlinkedModelSerializer):
+class RiskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Risk
-        fields = ('id', 'name')
+        fields = '__all__'
