@@ -1,63 +1,58 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang=”en”>
  <head>
  <meta charset=”utf-8">
- <title>Vue-js | Django | Crud App</title>
+ <title>Risks</title>
  <meta name=”viewport” content=”width=device-width, initial-scale=1.0">
- <meta name=”description” content=”A simple crud app made with the vue js and django”>
-<meta name=”keywords” content=”vuejs, django, crudapp, restapi”>
     <!-- bootstap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- boostrap css -->
 </head>
-<body>
+
+
+<html>
+
+  <head>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
+
+  <body>
+
 
 <h1>Risk List</h1>
-<ul>
-    {% for risk in risks %}
-        <li>Risk: {{risk.name}} 
-        <table style="width:50%">
-        <tr>
-          <th>Field</th>
-          <th>Type</th> 
-          <th>Label</th>
-        </tr>
-        {% for field in risk.data.fields %}
-          {% for detail in field.attrs %}
-            <tr>
-              <td>{{ field.name }}</td>
-              <td>{{ detail.type }}</td> 
-              <td>{{ detail.label }}</td>
-            </tr>
-          {% endfor %}  
-        {% endfor %}
-        </table>
-        </li>  
-        <p>   
-    {% endfor %}
-</ul>
+
+ <div id="starting">
+     <div class="cold-md-5 col-md-offset-7">
+          <span v-for="field in fields">
+            <div class='row'>
+             <p>${field.name}</p> 
+             <input v-if="field.type == 'text'" type="text" >
+             <input v-if="field.type == 'date'" type="date" >   
+             <input v-if="field.type == 'number'" type="number" >
+            </div> 
+           </span>
 
 
+         </div>
 
-  <div id="starting">
       <div class="container">
         <div class="row">
-          <h1>List of Risks
-          <button class="btn btn-success">ADD RISK</button>
-          </h1>
+          <h1>List of Risks</h1>
           <table class="table">
             <thead>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
-                <th scope="col">Data</th>
+                <th scope="col">Description</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="risk in risks">
                 <th scope="row">${risk.risk_id}</th>
                 <td>${risk.name}</td>
-                <td>${risk.data}</td>
+                <td>${risk.description}</td>
+                <td><button @click="itemClicked(item)" class="btn btn-info">Detail</button></td>
               </tr>
             </tbody>
           </table>
@@ -67,7 +62,45 @@
   </div>
 
 
-  <!-- bootrtap js files -->
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+
+<div id="form">
+  <input v-for="item in items" v-model="item.value">
+  <button @click="addItem">add</button> {{items}}
+
+</div>
+  <script type="text/javascript">
+new Vue({
+  el: '#form',
+  data: {
+    items: [],
+  },
+  methods: {
+    addItem() {
+      this.items.push({
+        value: 'xxx'
+      });
+    }
+  }
+})  
+</script> 
+
+
+    <div id="app">
+      New user:
+      <v-form :schema="formSchema" :data="formData"></v-form>
+      <hr>
+      Form data:
+      <pre>{{ formData }}</pre>
+    </div>
+    
+    <!-- Scripts -->
+    <script data-require="vue.js@2.0.3" data-semver="2.0.3" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js"></script>
+    <script src="{% static 'script.js' %}"></script> 
+
+
+<!-- los otros bootrtap js files -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -81,16 +114,19 @@
     new Vue({
       el: '#starting',
       delimiters: ['${','}'],
+      types: ['text', 'date'],      
       data: {
         risks: [],
+        fields: [],
         loading: true,
         currentRisk: {},
         message: null,
-        newRisk: { 'article_heading': null, 'article_body': null },
+        newRisk: { 'risk_heading': null, 'risk_body': null },
         search_term: '',
       },
       mounted: function() {
         this.getRisks();
+        this.getFields();
       },
       methods: {
         getRisks: function() {
@@ -108,9 +144,24 @@
                 this.loading = false;
                 console.log(err);
               })
-        } 
+        },
+        getFields: function() {
+          this.loading = true;
+          this.$http.get('/api/field/')
+              .then((response) => {
+               this.fields = response.data;
+               this.loading = false;
+             })
+              .catch((err) => {
+                this.loading = false;
+                console.log(err);
+              })
+        }         
       }        	
     });
   </script>      	
-</body>
+
+
+  </body>
+
 </html>
