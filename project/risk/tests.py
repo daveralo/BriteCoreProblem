@@ -1,10 +1,10 @@
 import json
 from django.test import RequestFactory, TestCase
-from .models import Risk
+from .models import Risk, Field
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
-from . import views
+from . import viewsets
 
 
 def response_to_json(response):
@@ -16,8 +16,9 @@ class ModelTestCase(TestCase):
 
     def setUp(self):
         """Define the test client and other test variables."""
-        self.risk_name = "test"
-        self.risk = Risk(name=self.risk_name)
+        self.name = "risk_test"
+        self.description = "description for the risk"
+        self.risk = Risk(name=self.name, description=self.description)
 
     def test_model_can_create_a_risk(self):
         """Test the risk model can create a risk."""
@@ -31,13 +32,17 @@ class ViewTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()    
 
-    def test_should_return_empty_array(self):
+    #def test_should_return_empty_array(self):
         # when
-        request = self.factory.get('/risk/')
-        print(request)
-        response = views.risk_list(request)
-        print(response)
-        json_content = response_to_json(response)
+        #request = self.factory.get('/api/risk/')
+        #print(request)
+        #response = viewsets.risk_list(request)
+        #print(response)
+        #json_content = response_to_json(response)
 
         # then
-        self.assertEqual(len(json_content), 0)    
+        #self.assertEqual(len(json_content), 0)    
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/api/risk/')
+        self.assertEqual(response.status_code, 200)    
