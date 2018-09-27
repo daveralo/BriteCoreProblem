@@ -3,7 +3,9 @@ ALTER ROLE bcuser SET default_transaction_isolation TO 'read committed';
 ALTER ROLE bcuser SET timezone TO 'UTC';
 GRANT ALL PRIVILEGES ON DATABASE britecore TO bcuser;
 
-
+CREATE ROLE bcuser WITH LOGIN PASSWORD '123';
+GRANT ALL PRIVILEGES ON DATABASE britecore TO bcuser;
+ALTER USER bcuser CREATEDB;
 
 
 from risk.models import Risk
