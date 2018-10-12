@@ -4,6 +4,7 @@ from .serializers import RiskSerializer, FieldSerializer
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
+
 class RiskViewSet(viewsets.ModelViewSet):
     queryset = Risk.objects.all()
     serializer_class = RiskSerializer
@@ -17,5 +18,5 @@ class RiskViewSet(viewsets.ModelViewSet):
 
 
 class FieldViewSet(viewsets.ModelViewSet):
-    queryset = Field.objects.all() 
-    serializer_class = FieldSerializer  
+    queryset = Field.objects.all()
+    serializer_class = FieldSerializer
