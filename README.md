@@ -1,16 +1,43 @@
-# BriteCore Problem
+# Product Development Hiring Project
 
-One Paragraph of project description goes here
+As part for a Product Development Hiring Project for [BriteCore](https://www.britecore.com/) in [this](https://github.com/IntuitiveWebSolutions/ProductDevelopmentProject) repository, this is a solution for the problem where the data model is pretty rigid. This solution is focus to insurers can define their own custom data model for their risk.
 
-## Getting Started
+## Backend
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+For Backend I used [Django](https://www.djangoproject.com/) and [Django REST framework](https://www.django-rest-framework.org/) with two models:
+
+```
+class Risk(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=500, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Field(models.Model):
+    TYPE_CHOICES = (
+        ('text', 'Text'),
+        ('date', 'Date'),
+        ('number', 'Number'),
+    )
+    name = models.CharField(max_length=100)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES,
+                            default='text')
+    label = models.CharField(max_length=100)
+    risk = models.ForeignKey(Risk, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+```
+
+## Data
 
 ### Entity relationship diagram 
 
 ![alt text](https://github.com/daveralo/BriteCoreProblem/blob/master/er-risk.png)
 
-### Data
+### Creating risks and fields
 
 ```
 from risk.models import Risk, Field
@@ -70,31 +97,9 @@ Field.objects.create(
     risk=person)     
 ```
 
-### Prerequisites
+## Frontend
 
-What things you need to install the software and how to install them
-
-```
-https://github.com/daveralo/BriteCoreProblem.git
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+description
 
 ## Running the tests
 
