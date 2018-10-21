@@ -1,6 +1,6 @@
 # Product Development Hiring Project
 
-As part for a Product Development Hiring Project for [BriteCore](https://www.britecore.com/) in [this](https://github.com/IntuitiveWebSolutions/ProductDevelopmentProject) repository, this is a solution for the problem where the data model is pretty rigid. This solution is focus to insurers can define their own custom data model for their risk.
+As part for a Product Development Hiring Project for [BriteCore](https://www.britecore.com/). This is a solution for the problem where the data model is pretty rigid. This solution is focus to insurers can define their own custom data model for their risk.
 
 ## Backend
 
@@ -99,28 +99,46 @@ Field.objects.create(
 
 ## Frontend
 
-description
+For Frontend I used [Vue.js](https://vuejs.org/) and [Boostrap](http://getbootstrap.com/) 
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+You can run the unit tests using the following command
 
 ```
-Give an example
+python manage.py test
 ```
-
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+For Frontend I used [Zappa](https://www.zappa.io/)
+
+```
+
+$ pip install zappa
+$ zappa init
+$ zappa deploy dev
+Deploying..
+Your application is now live at: https://itqbut4z6g.execute-api.us-east-1.amazonaws.com/dev/
+
+```
+
+Next you have to modify settings.py with credentials and host of AWS, then you can update your deploy:
+
+```
+
+$ zappa update dev
+
+```
+
 
 ## Built With
 
 * [Django](https://www.djangoproject.com/) - python Web framework
 * [Django REST framework](https://www.django-rest-framework.org/) - powerful and flexible toolkit for building Web APIs
 * [PostgreSQL](https://www.postgresql.org/) -  open source relational database
+* [Vue.js](https://vuejs.org/) - JavaScript Framework
+* [Boostrap](http://getbootstrap.com/) - open source toolkit for developing with HTML, CSS, and JS.
+
+
 
