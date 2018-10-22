@@ -1,8 +1,3 @@
-
-Daniel Vera <daveralo@gmail.com>
-dom., 21 oct. 21:02 (hace 11 horas)
-para mi
-
 # Product Development Hiring Project
 
 As part for a Product Development Hiring Project for [BriteCore](https://www.britecore.com/). This is a solution for the problem where the data model is pretty rigid. This solution is focus to insurers can define their own custom data model for their risk.
